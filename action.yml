@@ -56,7 +56,7 @@ runs:
     #     commitMessage: Compile CSS
 
     - name: Deploy to WP Engine
-      uses: wpengine/github-action-wpe-site-deploy@3.0
+      uses: wpengine/github-action-wpe-site-deploy@v3.0
       with:
         # Deploy vars
         WPE_SSHG_KEY_PRIVATE: ${{ inputs.wpengine-ssh-gateway-key-private }}
