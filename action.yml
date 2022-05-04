@@ -1,23 +1,78 @@
-name: 'Hello World'
-description: 'Greet someone'
+name: Deploy to WP Engine
+description: Compiles CSS with Grunt, commits the changes, and then deploys to WP Engine.
 inputs:
-  whom-to-greet:  # id of input
-    description: 'Whom to greet'
+  environment-name:
+    description: The name of your WP Engine install
     required: true
-    default: 'World'
+  source-path:
+    description: The source path to the theme you want to upload. Something like “wp-content/themes/genesis-child-theme”.
+    required: true
+  remote-path:
+    description: The destination path of the theme you want to upload. Something like “wp-content/themes/genesis-child-theme”.
+    required: true
+  rsync-flags:
+    description: Command-line flags passed to rsync(1).
+    required: true
+    default: -azvr --inplace --delete --exclude=".*" --exclude-from=.deployignore
+  production-branch:
+    description: The name of the branch that will be deployed to the production environment. Frequently “main”.
+    required: true
+  production-environment:
+    description: The name of the production environment that will be deployed to.
+    required: true
+  staging-branch:
+    description: The name of the branch that will be deployed to the production environment. Frequently “develop”.
+    required: false
+  staging-environment:
+    description: The name of the staging environment that will be deployed to. Frequently the name of the production environment with “staging” appended to it.
+    required: false
+  purge-urls-from-cloudflare:
+    description: A string containing a flow-style list (“'["https://a", "https://b"]'”) of URLs to purge from CloudFlare. If empty, this action will  not be performed.
+    required: false
+
 outputs:
   random-id:
     description: "Random number"
     value: ${{ steps.random-number-generator.outputs.random-id }}
+
 runs:
   using: "composite"
   steps:
-    - run: echo Hello ${{ inputs.whom-to-greet }}.
-      shell: bash
-    - id: random-number-generator
-      run: echo "::set-output name=random-id::$(echo $RANDOM)"
-      shell: bash
-    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
-      shell: bash          
-    - run: goodbye.sh
-      shell: bash
+    - uses: actions/checkout@v3 # updated from v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: 18 # updated from 17 (may be premature)
+
+    # - name: Compile with Grunt
+    #   uses: elstudio/actions-js-build/build@v4
+
+    # - name: Commit changes
+    #   uses: elstudio/actions-js-build/commit@v4
+    #   with:
+    #     commitMessage: Compile CSS
+
+    - name: Deploy to WP Engine
+      uses: wpengine/github-action-wpe-site-deploy@3.0
+      with:
+        # Deploy vars
+        WPE_SSHG_KEY_PRIVATE: ${{ secrets.WPE_SSHG_KEY_PRIVATE }} # do I need to forward this via inputs?
+        WPE_ENV:              ${{ inputs.environment-name }}
+        SRC_PATH:             ${{ inputs.source-path }}
+        REMOTE_PATH:          ${{ inputs.remote-path }}
+        PHP_LINT:             true
+        FLAGS:                ${{ inputs.rsync-flags }}
+        CACHE_CLEAR:          true
+
+        # Branches and Environments
+        PRD_BRANCH: ${{ inputs.production-branch }}
+        PRD_ENV:    ${{ inputs.production-environment }}
+        STG_BRANCH: ${{ inputs.staging-branch }}
+        STG_ENV:    ${{ inputs.staging-environment }}
+
+    - name: Purge cache
+      uses: jakejarvis/cloudflare-purge-action@master
+      if:   ${{ join(inputs.purge-urls-from-cloudflare) == "" }}
+      env:
+        CLOUDFLARE_ZONE:  ${{ secrets.CLOUDFLARE_ZONE }}
+        CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+        PURGE_URLS:       ${{ inputs.purge-urls-from-cloudflare }}
