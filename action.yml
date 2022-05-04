@@ -5,7 +5,7 @@ inputs:
     description: The private key that you use to connect to the WPEngine SSH Gateway. You should pass this in from `secrets.WPE_SSHG_KEY_PRIVATE`.
     required: true
   environment-name:
-    description: The name of your WP Engine install
+    description: The name of your WP Engine install.
     required: true
   source-path:
     description: The source path to the theme you want to upload. Something like “wp-content/themes/genesis-child-theme”.
@@ -17,18 +17,6 @@ inputs:
     description: Command-line flags passed to rsync(1).
     required: true
     default: -azvr --inplace --delete --exclude=".*" --exclude-from=.deployignore
-  production-branch:
-    description: The name of the branch that will be deployed to the production environment. Frequently “main”.
-    required: true
-  production-environment:
-    description: The name of the production environment that will be deployed to.
-    required: true
-  staging-branch:
-    description: The name of the branch that will be deployed to the production environment. Frequently “develop”.
-    required: false
-  staging-environment:
-    description: The name of the staging environment that will be deployed to. Frequently the name of the production environment with “staging” appended to it.
-    required: false
   cloudflare-purge-urls:
     description: A string containing a flow-style list (“'["https://a", "https://b"]'”) of URLs to purge from Cloudflare. If empty, this action will not be performed.
     required: false
@@ -66,12 +54,6 @@ runs:
         PHP_LINT:             true
         FLAGS:                ${{ inputs.rsync-flags }}
         CACHE_CLEAR:          true
-
-        # Branches and Environments
-        PRD_BRANCH: ${{ inputs.production-branch }}
-        PRD_ENV:    ${{ inputs.production-environment }}
-        STG_BRANCH: ${{ inputs.staging-branch }}
-        STG_ENV:    ${{ inputs.staging-environment }}
 
     - name: Purge cache
       uses: jakejarvis/cloudflare-purge-action@master
