@@ -1,6 +1,9 @@
 name: Deploy to WP Engine
 description: Compiles CSS with Grunt, commits the changes, and then deploys to WP Engine.
 inputs:
+  wpengine-ssh-gateway-key-private:
+    description: The private key that you use to connect to the WPEngine SSH Gateway. You should pass this in from `secrets.WPE_SSHG_KEY_PRIVATE`.
+    required: true
   environment-name:
     description: The name of your WP Engine install
     required: true
@@ -8,7 +11,7 @@ inputs:
     description: The source path to the theme you want to upload. Something like “wp-content/themes/genesis-child-theme”.
     required: true
   remote-path:
-    description: The destination path of the theme you want to upload. Something like “wp-content/themes/genesis-child-theme”.
+    description: The remote destination path of the theme you want to upload. Something like “wp-content/themes/genesis-child-theme”.
     required: true
   rsync-flags:
     description: Command-line flags passed to rsync(1).
@@ -26,17 +29,18 @@ inputs:
   staging-environment:
     description: The name of the staging environment that will be deployed to. Frequently the name of the production environment with “staging” appended to it.
     required: false
-  purge-urls-from-cloudflare:
-    description: A string containing a flow-style list (“'["https://a", "https://b"]'”) of URLs to purge from CloudFlare. If empty, this action will  not be performed.
+  cloudflare-purge-urls:
+    description: A string containing a flow-style list (“'["https://a", "https://b"]'”) of URLs to purge from Cloudflare. If empty, this action will not be performed.
+    required: false
+  cloudflare-zone:
+    description: The Cloudflare zone to purge URLs from. Frequently `secrets.CLOUDFLARE_ZONE`.
+    required: false
+  cloudflare-token:
+    description: The Cloudflare token used to purge URLs. Frequently `secrets.CLOUDFLARE_TOKEN`.
     required: false
 
-outputs:
-  random-id:
-    description: "Random number"
-    value: ${{ steps.random-number-generator.outputs.random-id }}
-
 runs:
-  using: "composite"
+  using: composite
   steps:
     - uses: actions/checkout@v3 # updated from v2
     - uses: actions/setup-node@v2
@@ -55,7 +59,7 @@ runs:
       uses: wpengine/github-action-wpe-site-deploy@3.0
       with:
         # Deploy vars
-        WPE_SSHG_KEY_PRIVATE: ${{ secrets.WPE_SSHG_KEY_PRIVATE }} # do I need to forward this via inputs?
+        WPE_SSHG_KEY_PRIVATE: ${{ inputs.wpengine-ssh-gateway-key-private }}
         WPE_ENV:              ${{ inputs.environment-name }}
         SRC_PATH:             ${{ inputs.source-path }}
         REMOTE_PATH:          ${{ inputs.remote-path }}
@@ -71,8 +75,8 @@ runs:
 
     - name: Purge cache
       uses: jakejarvis/cloudflare-purge-action@master
-      if:   ${{ join(inputs.purge-urls-from-cloudflare) == "" }}
+      if:   ${{ join(inputs.cloudflare-purge-urls) == "" }}
       env:
-        CLOUDFLARE_ZONE:  ${{ secrets.CLOUDFLARE_ZONE }}
-        CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
-        PURGE_URLS:       ${{ inputs.purge-urls-from-cloudflare }}
+        CLOUDFLARE_ZONE:  ${{ inputs.cloudflare-zone }}
+        CLOUDFLARE_TOKEN: ${{ inputs.cloudflare-token }}
+        PURGE_URLS:       ${{ inputs.cloudflare-purge-urls }}
