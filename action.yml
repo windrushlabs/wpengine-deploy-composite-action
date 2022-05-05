@@ -26,17 +26,10 @@ inputs:
   cloudflare-token:
     description: The Cloudflare token used to purge URLs. Frequently `secrets.CLOUDFLARE_TOKEN`.
     required: false
-  multiline-message:
-    description: A multiline secret message.
-    required: false
 
 runs:
   using: composite
   steps:
-    - run:   echo "$GITHUB_CONTEXT"
-      shell: bash
-    - run:   echo "${{ inputs.multiline-message }}"
-      shell: bash
     - uses: actions/checkout@v3 # updated from v2
     - uses: actions/setup-node@v2
       with:
@@ -53,7 +46,8 @@ runs:
     - name: Deploy to WP Engine
       uses: wpengine/github-action-wpe-site-deploy@v3.0
       with:
-        # Deploy vars
+        # OpenSSH private keys are multiple lines long and start with “---”.
+        # `inputs` passing fails if we use the normal ${{ … }} expansion here. YAML literal style (“|”) fixes this.
         WPE_SSHG_KEY_PRIVATE: |
                               ${{ inputs.wpengine-ssh-gateway-key-private }}
         WPE_ENV:              ${{ inputs.environment-name }}
