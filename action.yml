@@ -26,10 +26,15 @@ inputs:
   cloudflare-token:
     description: The Cloudflare token used to purge URLs. Frequently `secrets.CLOUDFLARE_TOKEN`.
     required: false
+  multiline-message:
+    description: A multiline secret message.
+    required: false
 
 runs:
   using: composite
   steps:
+    - run:  echo "$GITHUB_CONTEXT"
+    - run:  echo "${{ inputs.multiline-message }}"
     - uses: actions/checkout@v3 # updated from v2
     - uses: actions/setup-node@v2
       with:
