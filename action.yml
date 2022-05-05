@@ -2,7 +2,7 @@ name: Deploy to WP Engine
 description: Compiles CSS with Grunt, commits the changes, and then deploys to WP Engine.
 inputs:
   wpengine-ssh-gateway-key-private:
-    description: The private key that you use to connect to the WPEngine SSH Gateway. You should pass this in from `secrets.WPE_SSHG_KEY_PRIVATE`.
+    description: The private SSH key that you use to connect to the WPEngine SSH Gateway. You should pass this in from `secrets.WPE_SSHG_KEY_PRIVATE`.
     required: true
   environment-name:
     description: The name of your WP Engine install.
@@ -13,6 +13,10 @@ inputs:
   remote-path:
     description: The remote destination path of the theme you want to upload. Something like “wp-content/themes/genesis-child-theme”.
     required: true
+  compile-with-grunt-and-commit:
+    description: If true, builds the project with Grunt and commits the changes.
+    required: true
+    default: false
   rsync-flags:
     description: Command-line flags passed to rsync(1).
     required: true
@@ -21,10 +25,10 @@ inputs:
     description: A string containing a flow-style list (“'["https://a", "https://b"]'”) of URLs to purge from Cloudflare. If empty, this action will not be performed.
     required: false
   cloudflare-zone:
-    description: The Cloudflare zone to purge URLs from. Frequently `secrets.CLOUDFLARE_ZONE`.
+    description: The Cloudflare zone to purge URLs from. Frequently `secrets.CLOUDFLARE_ZONE`. This will need to be set for `cloudflare-purge-urls` to work.
     required: false
   cloudflare-token:
-    description: The Cloudflare token used to purge URLs. Frequently `secrets.CLOUDFLARE_TOKEN`.
+    description: The Cloudflare token used to purge URLs. Frequently `secrets.CLOUDFLARE_TOKEN`. This will need to be set for `cloudflare-purge-urls` to work.
     required: false
 
 runs:
@@ -35,13 +39,15 @@ runs:
       with:
         node-version: 18 # updated from 17 (may be premature)
 
-    # - name: Compile with Grunt
-    #   uses: elstudio/actions-js-build/build@v4
+    - name: Compile with Grunt
+      uses: elstudio/actions-js-build/build@v4
+      if:   ${{ input.compile-with-grunt-and-commit }}
 
-    # - name: Commit changes
-    #   uses: elstudio/actions-js-build/commit@v4
-    #   with:
-    #     commitMessage: Compile CSS
+    - name: Commit changes
+      uses: elstudio/actions-js-build/commit@v4
+      if:   ${{ input.compile-with-grunt-and-commit }}
+      with:
+        commitMessage: Compile CSS
 
     - name: Deploy to WP Engine
       uses: wpengine/github-action-wpe-site-deploy@v3.0
