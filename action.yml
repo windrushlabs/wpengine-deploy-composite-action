@@ -54,7 +54,8 @@ runs:
       uses: wpengine/github-action-wpe-site-deploy@v3.0
       with:
         # Deploy vars
-        WPE_SSHG_KEY_PRIVATE: ${{ inputs.wpengine-ssh-gateway-key-private }}
+        WPE_SSHG_KEY_PRIVATE: |
+                              ${{ inputs.wpengine-ssh-gateway-key-private }}
         WPE_ENV:              ${{ inputs.environment-name }}
         SRC_PATH:             ${{ inputs.source-path }}
         REMOTE_PATH:          ${{ inputs.remote-path }}
