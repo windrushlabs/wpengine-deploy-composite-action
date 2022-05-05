@@ -33,8 +33,10 @@ inputs:
 runs:
   using: composite
   steps:
-    - run:  echo "$GITHUB_CONTEXT"
-    - run:  echo "${{ inputs.multiline-message }}"
+    - run:   echo "$GITHUB_CONTEXT"
+      shell: bash
+    - run:   echo "${{ inputs.multiline-message }}"
+      shell: bash
     - uses: actions/checkout@v3 # updated from v2
     - uses: actions/setup-node@v2
       with:
