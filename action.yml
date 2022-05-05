@@ -41,11 +41,11 @@ runs:
 
     - name: Compile with Grunt
       uses: elstudio/actions-js-build/build@v4
-      if:   ${{ inputs.compile-with-grunt-and-commit }}
+      if:   ${{ inputs.compile-with-grunt-and-commit == true }}
 
     - name: Commit changes
       uses: elstudio/actions-js-build/commit@v4
-      if:   ${{ inputs.compile-with-grunt-and-commit }}
+      if:   ${{ inputs.compile-with-grunt-and-commit == true }}
       with:
         commitMessage: Compile CSS
 
