@@ -69,7 +69,7 @@ runs:
 
     - name: Purge cache
       uses: jakejarvis/cloudflare-purge-action@master
-      if:   ${{ join(inputs.cloudflare-purge-urls) == '' }}
+      if:   ${{ join(inputs.cloudflare-purge-urls) != '' }}
       env:
         CLOUDFLARE_ZONE:  ${{ inputs.cloudflare-zone }}
         CLOUDFLARE_TOKEN: ${{ inputs.cloudflare-token }}
