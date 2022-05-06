@@ -13,8 +13,8 @@ inputs:
   remote-path:
     description: The remote destination path of the theme you want to upload. Something like “wp-content/themes/genesis-child-theme”.
     required: true
-  compile-with-grunt-and-commit:
-    description: If true, builds the project with Grunt and commits the changes.
+  compile-and-commit:
+    description: If true, builds the project with Grunt or Gulp and commits the changes.
     required: true
     default: false
   rsync-flags:
@@ -41,11 +41,11 @@ runs:
 
     - name: Compile with Grunt
       uses: elstudio/actions-js-build/build@v4
-      if:   ${{ inputs.compile-with-grunt-and-commit == true }}
+      if:   inputs.compile-and-commit == true
 
     - name: Commit changes
       uses: elstudio/actions-js-build/commit@v4
-      if:   ${{ inputs.compile-with-grunt-and-commit == true }}
+      if:   inputs.compile-and-commit == true
       with:
         commitMessage: Compile CSS
 
