@@ -8,9 +8,13 @@ You’ll need to Read The Fine Source for this one. There are quite a few of the
 
 ## Requirements
 
-Unless you override the default for `rsync-flags`, you’ll need a `.deployignore` file in in the directory you specify with `source-path`. It will be passed to rsync’s `--exclude-from` parameter.
+Unless you override the default for `rsync-flags`, you’ll need a `.deployignore` file in in the directory you specify with `source-path`. It is expected that [the `.deployignore` is formatted as an rsync(1) filter-rules file][filter-rules]. This file will be passed to rsync via its [`--exclude-from` parameter][--exclude-from].
 
-The `.deployignore` file can be empty.
+While the `.deployignore` file can be empty, you will want to add `node_modules` to it as an exclusion (`-`) if you ever plan on using Node-based anything in the repository:
+
+```rsync-filter-rules
+- node_modules
+```
 
 ## Actions, etc. documentation
 
@@ -20,3 +24,6 @@ The `.deployignore` file can be empty.
 - <https://download.samba.org/pub/rsync/rsync.1>:
   - <https://download.samba.org/pub/rsync/rsync.1#opt--exclude-from>
   - <https://download.samba.org/pub/rsync/rsync.1#FILTER_RULES>
+
+[filter-rules]: https://download.samba.org/pub/rsync/rsync.1#FILTER_RULES
+[--exclude-from]: https://download.samba.org/pub/rsync/rsync.1#opt--exclude-from
