@@ -39,6 +39,10 @@ runs:
       with:
         node-version: 18 # updated from 17 (may be premature)
 
+    - run:   |
+        echo '${{ toJSON(inputs) }}'
+      shell: bash
+
     - name: Compile with Grunt
       uses: elstudio/actions-js-build/build@v4
       if:   inputs.compile-and-commit == true
