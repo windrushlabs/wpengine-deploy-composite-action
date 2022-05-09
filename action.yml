@@ -1,43 +1,66 @@
 name: Deploy to WP Engine
-description: Compiles CSS with Grunt, commits the changes, and then deploys to WP Engine.
+description: |
+  Deploys files to WP Engine.
+  
+  It can also, at your option:
+  
+  - Compile CSS with Grunt or Gulp and commit the changes back to the repository
+  - Purge the Cloudflare cache in front of the site
+
 inputs:
   wpengine-ssh-gateway-key-private:
-    description: The private SSH key that you use to connect to the WPEngine SSH Gateway. You should pass this in from `secrets.WPE_SSHG_KEY_PRIVATE`.
     required: true
+    description: |
+      The private SSH key that you use to connect to the WPEngine SSH Gateway. You should pass this in from `secrets.WPE_SSHG_KEY_PRIVATE`.
+
   environment-name:
+    required: true
     description: The name of your WP Engine install.
-    required: true
+
   source-path:
-    description: The source path to the theme you want to upload. Something like “wp-content/themes/genesis-child-theme”.
     required: true
+    description: |
+      The source path to the theme you want to upload. Something like “wp-content/themes/genesis-child-theme”.
+
   remote-path:
-    description: The remote destination path of the theme you want to upload. Something like “wp-content/themes/genesis-child-theme”.
     required: true
+    description: |
+      The remote destination path of the theme you want to upload. Something like “wp-content/themes/genesis-child-theme”.
+
   compile-and-commit:
-    description: If true, builds the project with Grunt or Gulp and commits the changes.
     required: true
     default: false
+    description: |
+      If true, builds the project with Grunt or Gulp and commits the changes.
+
   rsync-flags:
-    description: Command-line flags passed to rsync(1).
     required: true
     default: -azvr --inplace --delete --exclude=".*" --exclude-from=.deployignore
+    description: |
+      Command-line flags passed to rsync(1).
+
   cloudflare-purge-urls:
-    description: A string containing a flow-style list (“'["https://a", "https://b"]'”) of URLs to purge from Cloudflare. If empty, this action will not be performed.
     required: false
+    description: |
+      A string containing a flow-style list (“'["https://a", "https://b"]'”) of URLs to purge from Cloudflare. If empty, this action will not be performed.
+
   cloudflare-zone:
-    description: The Cloudflare zone to purge URLs from. Frequently `secrets.CLOUDFLARE_ZONE`. This will need to be set for `cloudflare-purge-urls` to work.
     required: false
+    description: |
+      The Cloudflare zone to purge URLs from. Frequently `secrets.CLOUDFLARE_ZONE`. This will need to be set for `cloudflare-purge-urls` to work.
+
   cloudflare-token:
-    description: The Cloudflare token used to purge URLs. Frequently `secrets.CLOUDFLARE_TOKEN`. This will need to be set for `cloudflare-purge-urls` to work.
     required: false
+    description: |
+      The Cloudflare token used to purge URLs. Frequently `secrets.CLOUDFLARE_TOKEN`. This will need to be set for `cloudflare-purge-urls` to work.
 
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v3 # updated from v2
+    - uses: actions/checkout@v3
     - uses: actions/setup-node@v2
       with:
-        node-version: 18 # updated from 17 (may be premature)
+        node-version: 18
 
     - run:   |
         echo '${{ toJSON(inputs) }}'
