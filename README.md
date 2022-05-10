@@ -6,9 +6,13 @@ This GitHub Action deploys themes to WordPress servers hosted on WP Engine.
 
 You’ll need to Read The Fine Source for this one. There are quite a few of them. Most are required.
 
-## Requirements
+## Recommendations
 
-Unless you override the default for `rsync-flags`, you’ll need a `.deployignore` file in in the directory you specify with `source-path`. It is expected that [the `.deployignore` is formatted as an rsync(1) filter-rules file][filter-rules]. This file will be passed to rsync via its [`--exclude-from` parameter][--exclude-from].
+### rsync flags
+
+You will want a file named `.deployignore` in the root of the source directory (specified in `source-path`).
+
+It is expected that the `.deployignore` file is formatted as [an rsync(1) filter-rules file][filter-rules]. This file will be passed to rsync via its [`--exclude-from` parameter][--exclude-from].
 
 While the `.deployignore` file can be empty, you will want to add `node_modules` to it as an exclusion (`-`) if you ever plan on using Node-based anything in the repository:
 
