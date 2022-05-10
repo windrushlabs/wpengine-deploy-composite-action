@@ -7,10 +7,6 @@ description: |
   - Compile CSS with Grunt or Gulp and commit the changes back to the repository
   - Purge the Cloudflare cache in front of the site
 
-defaults:
-  run:
-    shell: bash
-
 inputs:
   wpengine-ssh-gateway-key-private:
     required: true
@@ -60,6 +56,11 @@ inputs:
 
 runs:
   using: composite
+  defaults:
+    run:
+      shell: bash
+
+
   steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v2
