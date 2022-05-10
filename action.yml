@@ -73,10 +73,6 @@ runs:
       with:
         commitMessage: Compile CSS
 
-    - shell: bash
-      run: |
-        echo "::group::Deploy"
-
     - name: Deploy to WP Engine
       uses: wpengine/github-action-wpe-site-deploy@v3.0
       with:
@@ -90,10 +86,6 @@ runs:
         PHP_LINT:             true
         FLAGS:                ${{ inputs.rsync-flags }}
         CACHE_CLEAR:          true
-
-    - shell: bash
-      run: |
-        echo "::endgroup::"
 
     - name: Purge cache
       uses: jakejarvis/cloudflare-purge-action@master
