@@ -12,13 +12,20 @@ You’ll need to Read The Fine Source for this one. There are quite a few of the
 
 You will want a file named `.deployignore` in the root of the source directory (specified in `source-path`).
 
-It is expected that the `.deployignore` file is formatted as [an rsync(1) filter-rules file][filter-rules]. This file will be passed to rsync via its [`--exclude-from` parameter][--exclude-from].
+It is expected that the `.deployignore` file is formatted as [an rsync(1) filter-rules file][filter-rules]. This file will be passed to rsync via its [`--exclude-from` parameter][exclude-from].
 
 While the `.deployignore` file can be empty, you will want to add `node_modules` to it as an exclusion (`-`) if you ever plan on using Node-based anything in the repository:
 
 ```rsync-filter-rules
 - node_modules
 ```
+
+### Debugging
+
+If you’re having trouble getting uploads to go into the right place, there are a couple rsync flags that may be handy to diagnose problems:
+
+- [`--itemize-changes`][itemize-changes] (have a look at the manpage to understand its terse output)
+- [`--dry-run`][dry-run]: computes changes, but doesn’t actually upload anything
 
 ## Actions, etc. documentation
 
@@ -30,4 +37,6 @@ While the `.deployignore` file can be empty, you will want to add `node_modules`
   - <https://download.samba.org/pub/rsync/rsync.1#FILTER_RULES>
 
 [filter-rules]: https://download.samba.org/pub/rsync/rsync.1#FILTER_RULES
-[--exclude-from]: https://download.samba.org/pub/rsync/rsync.1#opt--exclude-from
+[exclude-from]: https://download.samba.org/pub/rsync/rsync.1#opt--exclude-from
+[itemize-changes]: https://download.samba.org/pub/rsync/rsync.1#opt--itemize-changes
+[dry-run]: https://download.samba.org/pub/rsync/rsync.1#opt--dry-run
