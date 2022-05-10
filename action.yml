@@ -11,7 +11,9 @@ inputs:
   wpengine-ssh-gateway-key-private:
     required: true
     description: |
-      The private SSH key that you use to connect to the WPEngine SSH Gateway. You should pass this in from something like `secrets.WPE_SSHG_KEY_PRIVATE`.
+      The private SSH key that you use to connect to the WPEngine SSH Gateway.
+      
+      You should pass this in from something like `secrets.WPE_SSHG_KEY_PRIVATE`.
 
   environment-name:
     required: true
@@ -20,18 +22,22 @@ inputs:
   source-path:
     required: true
     description: |
-      The source path to the theme you want to upload. Something like “wp-content/themes/your-child-theme”, or possibly “.”.
+      The source path to the theme you want to upload.
+      
+      This will be something like “wp-content/themes/your-child-theme”, or possibly “.”.
 
   remote-path:
     required: true
     description: |
-      The remote destination path of the theme you want to upload. Something like “wp-content/themes/your-child-theme”, or possibly “.”.
+      The remote destination path of the theme you want to upload.
+      
+      This will be something like “wp-content/themes/your-child-theme”, or possibly “.”.
 
   compile-and-commit:
     required: true
     default: false
     description: |
-      If true, builds the project with Grunt or Gulp and commits the changes.
+      If true, builds the project with Grunt or Gulp and commits the changes (if any).
 
   rsync-flags:
     required: true
@@ -42,17 +48,27 @@ inputs:
   cloudflare-purge-urls:
     required: false
     description: |
-      A string containing a flow-style list (“'["https://a", "https://b"]'”) of URLs to purge from Cloudflare. If empty, this action will not be performed.
+      A string containing a flow-style list (“'["https://a", "https://b"]'”) of URLs to purge from Cloudflare.
+      
+      If this input is not specified, no purging will be attempted.
 
   cloudflare-zone:
     required: false
     description: |
-      The Cloudflare zone to purge URLs from. Frequently `secrets.CLOUDFLARE_ZONE`. This will need to be set for `cloudflare-purge-urls` to work.
+      The Cloudflare zone to purge URLs from.
+      
+      Frequently `secrets.CLOUDFLARE_ZONE`.
+      
+      This will need to be set for `cloudflare-purge-urls` to work.
 
   cloudflare-token:
     required: false
     description: |
-      The Cloudflare token used to purge URLs. Frequently `secrets.CLOUDFLARE_TOKEN`. This will need to be set for `cloudflare-purge-urls` to work.
+      The Cloudflare token used to purge URLs.
+      
+      Frequently `secrets.CLOUDFLARE_TOKEN`.
+      
+      This will need to be set for `cloudflare-purge-urls` to work.
 
 runs:
   using: composite
