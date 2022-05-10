@@ -8,6 +8,17 @@ You’ll need to Read The Fine Source for this one. There are quite a few of the
 
 ## Recommendations
 
+### `source-path` and `remote-path`
+
+Because both `source-path` and `remote-path` are passed to `rsync`, it may be helpful to understand its rules for trailing slashes on paths. From the [USAGE section of the `rsync` manpage][usage]:
+
+> A trailing slash on the source changes this behavior to avoid creating an additional directory level at the destination. You can think of a trailing / on a source as meaning “copy the contents of this directory” as opposed to “copy the directory by name”, but in both cases the attributes of the containing directory are transferred to the containing directory on the destination. In other words, each of the following commands copies the files in the same way, including their setting of the attributes of /dest/foo:
+>
+> ```sh
+> rsync -av /src/foo /dest
+> rsync -av /src/foo/ /dest/foo
+> ```
+
 ### rsync flags
 
 You will want a file named `.deployignore` in the root of the source directory (specified in `source-path`).
@@ -36,6 +47,7 @@ If you’re having trouble getting uploads to go into the right place, there are
   - <https://download.samba.org/pub/rsync/rsync.1#opt--exclude-from>
   - <https://download.samba.org/pub/rsync/rsync.1#FILTER_RULES>
 
+[usage]: https://download.samba.org/pub/rsync/rsync.1#USAGE
 [filter-rules]: https://download.samba.org/pub/rsync/rsync.1#FILTER_RULES
 [exclude-from]: https://download.samba.org/pub/rsync/rsync.1#opt--exclude-from
 [itemize-changes]: https://download.samba.org/pub/rsync/rsync.1#opt--itemize-changes
