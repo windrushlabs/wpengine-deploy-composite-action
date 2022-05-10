@@ -56,10 +56,6 @@ inputs:
 
 runs:
   using: composite
-  defaults:
-    run:
-      shell: bash
-
 
   steps:
     - uses: actions/checkout@v3
@@ -77,7 +73,8 @@ runs:
       with:
         commitMessage: Compile CSS
 
-    - run: |
+    - shell: bash
+      run: |
         echo "::group::Deploy"
 
     - name: Deploy to WP Engine
@@ -94,7 +91,8 @@ runs:
         FLAGS:                ${{ inputs.rsync-flags }}
         CACHE_CLEAR:          true
 
-    - run: |
+    - shell: bash
+      run: |
         echo "::endgroup::"
 
     - name: Purge cache
