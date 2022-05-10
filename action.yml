@@ -7,6 +7,10 @@ description: |
   - Compile CSS with Grunt or Gulp and commit the changes back to the repository
   - Purge the Cloudflare cache in front of the site
 
+defaults:
+  run:
+    shell: bash
+
 inputs:
   wpengine-ssh-gateway-key-private:
     required: true
@@ -72,6 +76,9 @@ runs:
       with:
         commitMessage: Compile CSS
 
+    - run: |
+      echo "::group::Deploy"
+
     - name: Deploy to WP Engine
       uses: wpengine/github-action-wpe-site-deploy@v3.0
       with:
@@ -85,6 +92,9 @@ runs:
         PHP_LINT:             true
         FLAGS:                ${{ inputs.rsync-flags }}
         CACHE_CLEAR:          true
+
+    - run: |
+      echo "::endgroup::"
 
     - name: Purge cache
       uses: jakejarvis/cloudflare-purge-action@master
