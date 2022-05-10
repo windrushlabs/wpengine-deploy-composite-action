@@ -77,7 +77,7 @@ runs:
         commitMessage: Compile CSS
 
     - run: |
-      echo "::group::Deploy"
+        echo "::group::Deploy"
 
     - name: Deploy to WP Engine
       uses: wpengine/github-action-wpe-site-deploy@v3.0
@@ -94,7 +94,7 @@ runs:
         CACHE_CLEAR:          true
 
     - run: |
-      echo "::endgroup::"
+        echo "::endgroup::"
 
     - name: Purge cache
       uses: jakejarvis/cloudflare-purge-action@master
