@@ -90,7 +90,7 @@ runs:
         commitMessage: Compile CSS
 
     - name: Deploy to WP Engine
-      uses: wpengine/github-action-wpe-site-deploy@v3.0
+      uses: wpengine/github-action-wpe-site-deploy@v3.1.1
       with:
         # OpenSSH private keys are multiple lines long and start with “---”.
         # `inputs` passing fails if we use the normal ${{ … }} expansion here. YAML literal style (“|”) fixes this.
