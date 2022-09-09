@@ -103,7 +103,7 @@ runs:
         FLAGS:                ${{ inputs.rsync-flags }}
         CACHE_CLEAR:          true
 
-    - name: Purge cache
+    - name: Purge Cloudflare cache
       uses: jakejarvis/cloudflare-purge-action@master
       if:   ${{ join(inputs.cloudflare-purge-urls) != '' }}
       env:
